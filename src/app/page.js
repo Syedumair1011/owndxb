@@ -8,7 +8,7 @@ import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import React, { useState } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { Modal } from 'bootstrap';
 import Swal from 'sweetalert2';
 
@@ -18,6 +18,7 @@ import Link from "next/link";
 export default function HomeTwo() {
 
   const [showModal, setShowModal] = useState(false);
+  const modalRef = useRef(null);
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowModal(true);
@@ -26,13 +27,11 @@ export default function HomeTwo() {
     return () => clearTimeout(timer); // Cleanup the timer if the component is unmounted
   }, []);
 
+  // Effect to show Bootstrap modal
   useEffect(() => {
-    if (showModal) {
-      const modalElement = document.getElementById('fademodal');
-      if (modalElement) {
-        const bootstrapModal = new Modal(modalElement);
-        bootstrapModal.show();
-      }
+    if (showModal && modalRef.current) {
+      const bootstrapModal = new Modal(modalRef.current);
+      bootstrapModal.show();
     }
   }, [showModal]);
 
@@ -41,15 +40,6 @@ export default function HomeTwo() {
   const fileUrl = '/assets/pdf/Brochure_Violet.pdf';
 
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [loading, setLoading] = useState(false);
-
-
-  const countryCodes = [
-    { name: 'United States', code: '+1', flag: '🇺🇸' },
-    { name: 'India', code: '+91' },
-    { name: 'United Kingdom', code: '+44' },
-    // Add more countries as needed
-  ];
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -1653,7 +1643,7 @@ export default function HomeTwo() {
           </div>
         </div>
       </div>
-      <div className={`modal fade ${showModal ? 'show' : ''}`} id="fademodal" tabIndex="-1" aria-labelledby="fademodalLabel" aria-hidden="true">
+      <div ref={modalRef} className={`modal fade ${showModal ? 'show' : ''}`} id="fademodal" tabIndex="-1" aria-labelledby="fademodalLabel" aria-hidden="true">
         <div className="modal-dialog modal-dialog-centered modal-lg">
           <div className="modal-content">
             <div className="modal-header">
